@@ -10,7 +10,7 @@ cp .build/release/Snip "$APP/Contents/MacOS/Snip"
 cp Info.plist "$APP/Contents/Info.plist"
 cp Resources/Snip.icns "$APP/Contents/Resources/Snip.icns"
 # A stable signing identity keeps the Screen Recording grant across rebuilds.
-IDENTITY=$(security find-identity -v -p codesigning | awk -F'"' '/Apple Development/ {print $2; exit}')
+IDENTITY=$(security find-identity -v -p codesigning | awk -F'"' '/Apple Development|Developer ID Application/ {print $2; exit}')
 codesign --force --sign "${IDENTITY:--}" "$APP"
 if [[ "${1:-}" == "--install" ]]; then
   pkill -x Snip 2>/dev/null || true

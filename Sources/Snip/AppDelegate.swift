@@ -48,8 +48,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.capture()
         }
 
-        if !CGPreflightScreenCaptureAccess() {
+        if !CGPreflightScreenCaptureAccess() || args.contains("--onboarding") {
             PermissionWindow.show()
+        } else if args.contains("--setup-done") {
+            PermissionWindow.showReady()
         }
     }
 
