@@ -32,13 +32,13 @@ public enum Tool: CaseIterable {
 
     public var tip: String {
         switch self {
-        case .rect: "Rectangle"
-        case .ellipse: "Ellipse"
-        case .arrow: "Arrow"
+        case .rect: "Rectangle (⇧ for square)"
+        case .ellipse: "Ellipse (⇧ for circle)"
+        case .arrow: "Arrow (⇧ snaps to 45°)"
         case .pen: "Pen"
-        case .mosaic: "Mosaic"
+        case .mosaic: "Mosaic: hide private info"
         case .text: "Text"
-        case .marker: "Numbered marker"
+        case .marker: "Numbered step (1, 2, 3…)"
         }
     }
 }

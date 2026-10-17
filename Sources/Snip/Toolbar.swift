@@ -1,10 +1,19 @@
 import AppKit
 import SnipKit
 
-/// Toolbar button with a soft rounded highlight while the pointer is over it.
+/// Toolbar button with a soft rounded highlight and a tooltip while the pointer is over it.
 class HoverButton: NSButton {
     private(set) var isHovered = false {
-        didSet { if isHovered != oldValue { needsDisplay = true } }
+        didSet {
+            guard isHovered != oldValue else { return }
+            needsDisplay = true
+            if isHovered { TipView.schedule(for: self) } else { TipView.hide(from: self) }
+        }
+    }
+
+    /// Drawn by TipView: the system tooltip never shows over the capture overlay (it sits below the overlay's window level).
+    var tip: String? {
+        didSet { setAccessibilityLabel(tip) }
     }
 
     override func updateTrackingAreas() {
@@ -19,6 +28,16 @@ class HoverButton: NSButton {
     override func viewDidHide() {
         super.viewDidHide()
         isHovered = false
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        TipView.hide(from: self)
+        super.mouseDown(with: event)
+    }
+
+    override func viewWillMove(toWindow newWindow: NSWindow?) {
+        if newWindow == nil { TipView.hide(from: self) }
+        super.viewWillMove(toWindow: newWindow)
     }
 
     func drawHover() {
@@ -45,7 +64,7 @@ final class IconButton: HoverButton {
             .withSymbolConfiguration(.init(pointSize: 15, weight: .medium))
         imagePosition = .imageOnly
         isBordered = false
-        toolTip = tip
+        self.tip = tip
         contentTintColor = tint
         target = self
         action = #selector(fire)
@@ -77,10 +96,11 @@ final class PaintButton: HoverButton {
     private let painter: (CGRect, Bool) -> Void
     private let handler: () -> Void
 
-    init(painter: @escaping (CGRect, Bool) -> Void, handler: @escaping () -> Void) {
+    init(tip: String, painter: @escaping (CGRect, Bool) -> Void, handler: @escaping () -> Void) {
         self.painter = painter
         self.handler = handler
         super.init(frame: CGRect(x: 0, y: 0, width: 26, height: 26))
+        self.tip = tip
         isBordered = false
         title = ""
         target = self
@@ -99,6 +119,73 @@ final class PaintButton: HoverButton {
     override func draw(_ dirtyRect: NSRect) {
         drawHover()
         painter(bounds, isActive)
+    }
+}
+
+/// A small dark label under the hovered button (above it when there's no room), shown after a short delay,
+/// or at once while moving between buttons the way macOS tooltips behave.
+final class TipView: NSView {
+    private static let shared = TipView()
+    private static weak var owner: HoverButton?
+    private static var pending: DispatchWorkItem?
+    private static var lastHidden = Date.distantPast
+
+    private let label = NSTextField(labelWithString: "")
+
+    private init() {
+        super.init(frame: .zero)
+        label.font = .systemFont(ofSize: 11, weight: .medium)
+        label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 7),
+            label.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ])
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        NSBezierPath(roundedRect: bounds, xRadius: 5, yRadius: 5).fill(NSColor(white: 0.12, alpha: 0.92))
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    static func schedule(for button: HoverButton) {
+        guard button.tip != nil else { return }
+        pending?.cancel()
+        owner = button
+        let work = DispatchWorkItem { [weak button] in if let button, button.isHovered { show(for: button) } }
+        pending = work
+        let warm = shared.superview != nil || Date().timeIntervalSince(lastHidden) < 0.6
+        DispatchQueue.main.asyncAfter(deadline: .now() + (warm ? 0 : 0.45), execute: work)
+    }
+
+    static func hide(from button: HoverButton) {
+        guard owner === button else { return }
+        pending?.cancel()
+        owner = nil
+        if shared.superview != nil { lastHidden = Date() }
+        shared.removeFromSuperview()
+    }
+
+    private static func show(for button: HoverButton) {
+        guard let tip = button.tip, let host = button.window?.contentView else { return }
+        let tipView = shared
+        tipView.label.stringValue = tip
+        let size = CGSize(width: ceil(tipView.label.intrinsicContentSize.width) + 14, height: 20)
+        let anchor = button.convert(button.bounds, to: host)
+        let gap: CGFloat = 6
+        var x = anchor.midX - size.width / 2
+        x = min(max(x, host.bounds.minX + 4), host.bounds.maxX - size.width - 4)
+        // In a non-flipped view "below" is smaller y.
+        let below = host.isFlipped ? anchor.maxY + gap : anchor.minY - gap - size.height
+        let above = host.isFlipped ? anchor.minY - gap - size.height : anchor.maxY + gap
+        let fitsBelow = host.isFlipped ? below + size.height <= host.bounds.maxY : below >= host.bounds.minY
+        tipView.frame = CGRect(origin: CGPoint(x: x, y: fitsBelow ? below : above), size: size)
+        tipView.needsDisplay = true
+        if tipView.superview !== host { host.addSubview(tipView) }
     }
 }
 
@@ -210,10 +297,10 @@ final class ToolbarView: FloatingBar {
             stack.addArrangedSubview(button)
         }
         stack.addArrangedSubview(separator())
-        stack.addArrangedSubview(IconButton(symbol: "pin", tip: "Pin to screen") { [weak self] in self?.overlay?.pin() })
-        stack.addArrangedSubview(IconButton(symbol: "text.viewfinder", tip: "Extract text") { [weak self] in self?.overlay?.recognizeText() })
-        stack.addArrangedSubview(IconButton(symbol: "rectangle.expand.vertical", tip: "Scrolling screenshot") { [weak self] in self?.overlay?.scrollCapture() })
-        stack.addArrangedSubview(IconButton(symbol: "record.circle", tip: "Record screen") { [weak self] in self?.overlay?.record() })
+        stack.addArrangedSubview(IconButton(symbol: "pin", tip: "Pin to screen (stays on top)") { [weak self] in self?.overlay?.pin() })
+        stack.addArrangedSubview(IconButton(symbol: "text.viewfinder", tip: "Extract text (OCR)") { [weak self] in self?.overlay?.recognizeText() })
+        stack.addArrangedSubview(IconButton(symbol: "rectangle.expand.vertical", tip: "Scrolling screenshot: scroll to capture a long page") { [weak self] in self?.overlay?.scrollCapture() })
+        stack.addArrangedSubview(IconButton(symbol: "record.circle", tip: "Record this region as video") { [weak self] in self?.overlay?.record() })
         stack.addArrangedSubview(separator())
         stack.addArrangedSubview(IconButton(symbol: "arrow.uturn.backward", tip: "Undo (⌘Z)") { [weak self] in self?.overlay?.undo() })
         stack.addArrangedSubview(IconButton(symbol: "square.and.arrow.down", tip: "Save (⌘S)") { [weak self] in self?.overlay?.save() })
@@ -241,8 +328,8 @@ final class OptionsView: FloatingBar {
     init(overlay: OverlayView) {
         self.overlay = overlay
         super.init(frame: .zero)
-        for (level, diameter) in [4.0, 7.0, 10.0].enumerated() {
-            let button = PaintButton(painter: { bounds, active in
+        for (level, (diameter, name)) in [(4.0, "Thin"), (7.0, "Medium"), (10.0, "Thick")].enumerated() {
+            let button = PaintButton(tip: name, painter: { bounds, active in
                 let dot = CGRect(x: bounds.midX - diameter / 2, y: bounds.midY - diameter / 2, width: diameter, height: diameter)
                 NSBezierPath(ovalIn: dot).fill(active ? accentBlue : NSColor(white: 0.55, alpha: 1))
             }) { [weak self] in self?.overlay?.setSizeLevel(level) }
@@ -250,8 +337,8 @@ final class OptionsView: FloatingBar {
             stack.addArrangedSubview(button)
         }
         stack.addArrangedSubview(colorSeparator)
-        for color in palette {
-            let button = PaintButton(painter: { bounds, active in
+        for (color, name) in zip(palette, ["Red", "Yellow", "Blue", "Green", "Black", "White"]) {
+            let button = PaintButton(tip: name, painter: { bounds, active in
                 let swatch = bounds.insetBy(dx: 6, dy: 6)
                 if active {
                     let ring = NSBezierPath(roundedRect: bounds.insetBy(dx: 3, dy: 3), xRadius: 4, yRadius: 4)
