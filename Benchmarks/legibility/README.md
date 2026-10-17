@@ -15,14 +15,14 @@ One run per width (2026-10-17).
 | 1152 | 0.8 | 1 | 4 | +1.2k |
 | 1008 | 0.7 | 0 | 8 | +1.0k |
 | 864 | 0.6 | 3 | 22 | +0.4k |
-| 720 | 0.5 | 8 | 40 | baseline |
+| 720 | 0.5 | 8 | 36 | baseline |
 
 Token column: subagent total minus the 720 px run, so it is relative and a little noisy.
 
 - The one miss from 2x down to 0.8x is `ORD-0O9P`, read as `ORD-009P` every time. That's the font (O and 0 look alike in this monospace face), not resolution.
 - Information starts to go at 0.6 px per point: `C0Oo` became `C0Do`, 5 warnings became 6.
 - At 0.5x, 8 answers were wrong, all small digits or confusable letters: `10:04:12` read as `:13`, `390ms` as `398ms`, `5.9.3` as `5.6.3`, `#A-55190` as `AX-55180`.
-- The agent never gave a wrong answer while saying it was sure. As resolution dropped, it flagged more answers unsure (4 at Retina, 40 at 0.5x).
+- The agent never gave a wrong answer while saying it was sure. As resolution dropped, it flagged more answers unsure (4 at Retina, 36 at 0.5x).
 - Above about 2000 px the harness shrinks the image anyway: 2880 cost about as much as 2160, and neither read better than 1x.
 
 Takeaway: 1 px per point is about 1.4x above where reading starts to fail, and costs half the tokens of a Retina image for the same answers.
