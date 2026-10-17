@@ -117,11 +117,12 @@ final class PermissionWindow: NSWindow {
 
     /// macOS only applies Screen Recording to a fresh process, so restart and say hello on the other side.
     private func relaunchReady() {
-        let task = Process()
-        task.executableURL = URL(fileURLWithPath: "/bin/sh")
-        task.arguments = ["-c", "sleep 0.5; /usr/bin/open \"$0\" --args --setup-done", Bundle.main.bundlePath]
-        try? task.run()
-        NSApp.terminate(nil)
+        let config = NSWorkspace.OpenConfiguration()
+        config.createsNewApplicationInstance = true
+        config.arguments = ["--setup-done"]
+        NSWorkspace.shared.openApplication(at: Bundle.main.bundleURL, configuration: config) { _, _ in
+            DispatchQueue.main.async { NSApp.terminate(nil) }
+        }
     }
 
     @objc private func takeScreenshot() {

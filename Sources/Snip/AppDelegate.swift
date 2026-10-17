@@ -34,14 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem(title: "Quit Snip", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem.menu = menu
 
-        hotKey = HotKey(keyCode: UInt32(kVK_ANSI_A), modifiers: UInt32(cmdKey | shiftKey)) { [weak self] in
-            // While a scrolling capture or recording runs, the shortcut finishes it.
-            if let live = Live.current {
-                live.finish()
-            } else {
-                self?.capture()
-            }
-        }
+        registerHotKeyWhenAlone()
 
         // Lets scripts trigger a capture: post "com.anup.snip.capture" as a distributed notification.
         DistributedNotificationCenter.default().addObserver(forName: Notification.Name("com.anup.snip.capture"), object: nil, queue: .main) { [weak self] _ in
@@ -52,6 +45,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             PermissionWindow.show()
         } else if args.contains("--setup-done") {
             PermissionWindow.showReady()
+        }
+    }
+
+    /// After a permission relaunch the old instance is still quitting; wait so ⌘⇧A lands on this one.
+    private func registerHotKeyWhenAlone(attempts: Int = 30) {
+        let others = NSRunningApplication.runningApplications(withBundleIdentifier: Bundle.main.bundleIdentifier ?? "")
+            .filter { $0 != NSRunningApplication.current }
+        if !others.isEmpty && attempts > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { self.registerHotKeyWhenAlone(attempts: attempts - 1) }
+            return
+        }
+        hotKey = HotKey(keyCode: UInt32(kVK_ANSI_A), modifiers: UInt32(cmdKey | shiftKey)) { [weak self] in
+            // While a scrolling capture or recording runs, the shortcut finishes it.
+            if let live = Live.current {
+                live.finish()
+            } else {
+                self?.capture()
+            }
         }
     }
 
