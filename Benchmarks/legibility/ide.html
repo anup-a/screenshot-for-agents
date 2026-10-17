@@ -1,0 +1,76 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 1440px; height: 900px; background: #1e1f22; color: #bcbec4; font-family: -apple-system, Helvetica, sans-serif; overflow: hidden; display: grid; grid-template-columns: 230px 1fr; grid-template-rows: 34px 1fr 230px 22px; }
+.top { grid-column: 1 / 3; background: #2b2d30; display: flex; align-items: center; padding: 0 12px; font-size: 12px; gap: 16px; }
+.top .branch { color: #8fbcff; }
+.tree { background: #2b2d30; font-size: 12px; padding: 8px 6px; grid-row: 2 / 4; }
+.tree div { padding: 2px 4px; white-space: nowrap; }
+.tree .sel { background: #2e436e; color: #fff; }
+.tree .mod { color: #6aab73; } .tree .err { color: #f75464; }
+.editor { font-family: "SF Mono", Menlo, monospace; font-size: 12px; line-height: 18px; padding-top: 4px; overflow: hidden; }
+.tabs { display: flex; font-family: -apple-system, Helvetica, sans-serif; font-size: 12px; background: #2b2d30; }
+.tabs span { padding: 7px 14px; }
+.tabs .on { background: #1e1f22; border-top: 2px solid #3574f0; color: #fff; }
+.l { display: flex; white-space: pre; }
+.n { width: 46px; text-align: right; padding-right: 14px; color: #4b5059; }
+.k { color: #cf8e6d; } .s { color: #6aab73; } .c { color: #7a7e85; font-style: italic; } .f { color: #56a8f5; } .num { color: #2aacb8; }
+.hl { background: #3b2a2a; }
+.squig { text-decoration: underline wavy #f75464; }
+.term { grid-column: 2; background: #1a1b1e; border-top: 1px solid #393b40; font-family: "SF Mono", Menlo, monospace; font-size: 11px; line-height: 15px; padding: 6px 10px; white-space: pre; overflow: hidden; }
+.red { color: #f75464; } .dim { color: #6f737a; } .yel { color: #e0b555; }
+.status { grid-column: 1 / 3; background: #2b2d30; font-size: 10px; display: flex; gap: 18px; align-items: center; padding: 0 10px; color: #9da0a8; }
+</style></head><body>
+<div class="top"><b style="color:#fff">fleet-router</b><span class="branch">⎇ fix/eta-rounding-4417</span><span>▶ test:unit</span><span style="margin-left:auto">↑2 ↓0</span></div>
+<div class="tree">
+  <div>▾ src</div>
+  <div>&nbsp;&nbsp;▾ routing</div>
+  <div class="sel">&nbsp;&nbsp;&nbsp;&nbsp;eta.ts</div>
+  <div class="mod">&nbsp;&nbsp;&nbsp;&nbsp;haversine.ts</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;planner.ts</div>
+  <div class="err">&nbsp;&nbsp;&nbsp;&nbsp;zones.ts</div>
+  <div>&nbsp;&nbsp;▸ api</div>
+  <div>&nbsp;&nbsp;▸ db</div>
+  <div>▾ test</div>
+  <div class="mod">&nbsp;&nbsp;&nbsp;&nbsp;eta.spec.ts</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;planner.spec.ts</div>
+  <div>package.json</div>
+  <div>tsconfig.json</div>
+</div>
+<div class="editor">
+  <div class="tabs"><span class="on">eta.ts ●</span><span>haversine.ts</span><span>eta.spec.ts</span></div>
+<div class="l"><span class="n">208</span><span><span class="c">// Speeds are km/h; the depot buffer is in seconds (see RFC-0091).</span></span></div>
+<div class="l"><span class="n">209</span><span><span class="k">const</span> DEPOT_BUFFER_S = <span class="num">420</span>;</span></div>
+<div class="l"><span class="n">210</span><span><span class="k">const</span> MIN_SPEED_KMH = <span class="num">7.5</span>;</span></div>
+<div class="l"><span class="n">211</span><span></span></div>
+<div class="l"><span class="n">212</span><span><span class="k">export function</span> <span class="f">estimateArrival</span>(leg: Leg, now: Date, opts: EtaOpts = {}): Date {</span></div>
+<div class="l"><span class="n">213</span><span>  <span class="k">const</span> km = <span class="f">haversine</span>(leg.from, leg.to) * (opts.detourFactor ?? <span class="num">1.18</span>);</span></div>
+<div class="l hl"><span class="n">214</span><span>  <span class="k">const</span> speed = Math.<span class="f">max</span>(leg.avgSpeed, MIN_SPEED_KMH) <span class="squig">/ 3600</span>;</span></div>
+<div class="l"><span class="n">215</span><span>  <span class="k">const</span> seconds = Math.<span class="f">round</span>(km / speed) + DEPOT_BUFFER_S;</span></div>
+<div class="l"><span class="n">216</span><span>  <span class="k">if</span> (leg.zone === <span class="s">'DXB-FZ-03'</span> &amp;&amp; !opts.skipCustoms) {</span></div>
+<div class="l"><span class="n">217</span><span>    <span class="k">return new</span> Date(now.<span class="f">getTime</span>() + (seconds + <span class="num">1_800</span>) * <span class="num">1000</span>);</span></div>
+<div class="l"><span class="n">218</span><span>  }</span></div>
+<div class="l"><span class="n">219</span><span>  <span class="k">return new</span> Date(now.<span class="f">getTime</span>() + seconds * <span class="num">1000</span>);</span></div>
+<div class="l"><span class="n">220</span><span>}</span></div>
+<div class="l"><span class="n">221</span><span></span></div>
+<div class="l"><span class="n">222</span><span><span class="c">// TODO(mkhan): round to the nearest 5 min only in the customer-facing API, not here.</span></span></div>
+<div class="l"><span class="n">223</span><span><span class="k">export function</span> <span class="f">roundEta</span>(d: Date, stepMin = <span class="num">5</span>): Date {</span></div>
+<div class="l"><span class="n">224</span><span>  <span class="k">const</span> ms = stepMin * <span class="num">60_000</span>;</span></div>
+<div class="l"><span class="n">225</span><span>  <span class="k">return new</span> Date(Math.<span class="f">ceil</span>(d.<span class="f">getTime</span>() / ms) * ms);</span></div>
+<div class="l"><span class="n">226</span><span>}</span></div>
+<div class="l"><span class="n">227</span><span></span></div>
+<div class="l"><span class="n">228</span><span><span class="k">export const</span> ZONE_SURCHARGE: Record&lt;string, number&gt; = { <span class="s">'DXB-FZ-03'</span>: <span class="num">0.35</span>, <span class="s">'AUH-KZ-11'</span>: <span class="num">0.2</span>, <span class="s">'SHJ-IA-07'</span>: <span class="num">0.15</span> };</span></div>
+</div>
+<div class="term"><span class="dim">$ pnpm vitest run test/eta.spec.ts</span>
+
+ <span class="red">FAIL</span>  test/eta.spec.ts &gt; estimateArrival &gt; adds customs time in free zone
+<span class="red">AssertionError: expected 2026-11-06T04:58:00.000Z to equal 2026-11-06T05:13:00.000Z</span>
+<span class="dim"> ❯ test/eta.spec.ts:61:43</span>
+     59|   const leg = mkLeg({ zone: 'DXB-FZ-03', km: 31.7, avgSpeed: 42 });
+     60|   const eta = estimateArrival(leg, T0);
+   <span class="red">  61|   expect(roundEta(eta)).toEqual(new Date('2026-11-06T05:13:00Z'));</span>
+
+ <span class="yel">Tests  1 failed | 23 passed (24)</span>
+ <span class="dim">Duration  1.84s (transform 212ms, setup 0ms, collect 390ms, tests 41ms)</span></div>
+<div class="status"><span>Ln 214, Col 37</span><span>UTF-8</span><span>LF</span><span>TypeScript 5.9.3</span><span class="red">✖ 2</span><span class="yel">⚠ 5</span><span style="margin-left:auto">Prettier ✓</span><span>Copilot: off</span></div>
+</body></html>
