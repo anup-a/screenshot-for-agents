@@ -3,6 +3,7 @@
 #   Marketing/readme/render.sh          illustrations (hero, scroll, record, agent)
 #   Marketing/readme/render.sh motion   also the demo video (demo.mp4) and its README GIF (needs ffmpeg)
 #   Marketing/readme/render.sh raw      first re-render the overlay states in raw/ (needs .build/release/Snip)
+# Then run webp.sh: the README shows the WebP copies in assets/web.
 # Playwright is installed into a temp dir (not the repo) and drives the local Google Chrome.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"

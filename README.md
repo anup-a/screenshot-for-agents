@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Icons/renders/2-scissors.png" width="128" alt="Snip icon">
+  <img src="Marketing/readme/assets/web/icon.webp" width="128" alt="Snip icon">
 </p>
 
 <h1 align="center">Snip</h1>
@@ -21,20 +21,20 @@
 </p>
 
 <p align="center">
-  <a href="Marketing/readme/assets/demo.mp4"><img src="Marketing/readme/assets/demo.gif" alt="Snip in 27 seconds: select and mark up, scroll a long chat, record a region, then an agent runs snip shot, ocr, mark, and pin" width="880"></a><br>
+  <a href="Marketing/readme/assets/demo.mp4"><img src="Marketing/readme/assets/web/demo.webp" alt="Snip in 27 seconds: select and mark up, scroll a long chat, record a region, then an agent runs snip shot, ocr, mark, and pin" width="880"></a><br>
   <sub><a href="Marketing/readme/assets/demo.mp4">Watch in full quality (MP4)</a></sub>
 </p>
 
 ## Tokens
 
 <p align="center">
-  <img src="Marketing/readme/assets/charts-tokens.png" alt="Tokens per screenshot on a 15-inch MacBook Air. Full screen: Retina copy 4,784 tokens, Copy for Agents 1,874 tokens (61% fewer). 600 by 400 point region: 1,280 versus 320 tokens (75% fewer)." width="880">
+  <img src="Marketing/readme/assets/web/charts-tokens.webp" alt="Tokens per screenshot on a 15-inch MacBook Air. Full screen: Retina copy 4,784 tokens, Copy for Agents 1,874 tokens (61% fewer). 600 by 400 point region: 1,280 versus 320 tokens (75% fewer)." width="880">
 </p>
 
 A Mac screenshot is Retina: every point on screen is 2x2 pixels, and models charge for images by pixel area. **Copy for Agents** (the ✨ button, or <kbd>⇧</kbd> <kbd>Enter</kbd>) and `snip shot --small` send 1 pixel per screen point instead.
 
 <p align="center">
-  <img src="Marketing/readme/assets/charts-legibility.png" alt="Correct answers out of 46 by pixels per point: 45 at 2x, 1.5x, 1x and 0.8x, 46 at 0.7x, then 43 at 0.6x and 38 at 0.5x. Tokens per screenshot fall from 4,784 at 2x to 1,728 at 1x." width="880">
+  <img src="Marketing/readme/assets/web/charts-legibility.webp" alt="Correct answers out of 46 by pixels per point: 45 at 2x, 1.5x, 1x and 0.8x, 46 at 0.7x, then 43 at 0.6x and 38 at 0.5x. Tokens per screenshot fall from 4,784 at 2x to 1,728 at 1x." width="880">
 </p>
 
 Fewer pixels, same answers. We showed two dense screens at seven sizes to fresh Claude Opus 5.5 agents and asked 46 questions with exact answers. Reading holds down to 0.7 pixels per point and starts to fail at 0.6, so 1 pixel per point leaves a wide margin. The one miss above that was the same at every size (`0O` read as `00` in a monospace font), and the agent never gave a wrong answer while saying it was sure. Copy for Agents ships in the next release; build from source to try it now.
@@ -53,7 +53,7 @@ Tokens are estimated with Anthropic's formula for Claude: width × height ÷ 750
 ## Speed
 
 <p align="center">
-  <img src="Marketing/readme/assets/charts-speed.png" alt="Median time per screenshot. Full screen: snip 376 ms, screencapture 775, python mss 693 (1x only), Peekaboo 1,127. Region: 291, 611, 499, 1,017. Window: 453, 827, mss not supported, Peekaboo 5,527." width="880">
+  <img src="Marketing/readme/assets/web/charts-speed.webp" alt="Median time per screenshot. Full screen: snip 376 ms, screencapture 775, python mss 693 (1x only), Peekaboo 1,127. Region: 291, 611, 499, 1,017. Window: 453, 827, mss not supported, Peekaboo 5,527." width="880">
 </p>
 
 Agents take a lot of screenshots, each one a fresh process, so `snip shot` is built to be quick. The Mac was busy during the run (load average 25 to 60), so every number is high, but the order held in every run. On an idle Mac a full-screen `snip shot` takes about 200 ms. Measure your own Mac with `python3 Benchmarks/bench.py`.
@@ -80,7 +80,7 @@ Where the time went:
 ## For you and your agent
 
 <p align="center">
-  <img src="Marketing/readme/assets/hero.png" alt="Left: a person marks up a dashboard with ⌘⇧A. Right: an agent runs snip shot, ocr, mark, and pin, and the marked screenshot floats on screen." width="880">
+  <img src="Marketing/readme/assets/web/hero.webp" alt="Left: a person marks up a dashboard with ⌘⇧A. Right: an agent runs snip shot, ocr, mark, and pin, and the marked screenshot floats on screen." width="880">
 </p>
 
 <table>
@@ -116,16 +116,16 @@ Snip brings that flow to the Mac as a tiny native menu bar app. There's no Elect
 
 <table>
   <tr>
-    <td width="50%"><img src="Marketing/appstore-v2/2-markup.png" alt="Mark it up"></td>
-    <td width="50%"><img src="Marketing/appstore-v2/3-private.png" alt="Hide what's private"></td>
+    <td width="50%"><img src="Marketing/readme/assets/web/appstore-2-markup.webp" alt="Mark it up"></td>
+    <td width="50%"><img src="Marketing/readme/assets/web/appstore-3-private.webp" alt="Hide what's private"></td>
   </tr>
   <tr>
     <td><b>Mark it up.</b> Rectangles, ellipses, arrows, freehand ink, text, and numbered steps. Six colors, three sizes. Hold Shift to keep shapes even and arrows straight.</td>
     <td><b>Hide what's private.</b> Brush a mosaic over passwords, emails, and account numbers before you share.</td>
   </tr>
   <tr>
-    <td width="50%"><img src="Marketing/appstore-v2/4-pin.png" alt="Pin it on top"></td>
-    <td width="50%"><img src="Marketing/appstore-v2/5-on-device.png" alt="Everything stays on your Mac"></td>
+    <td width="50%"><img src="Marketing/readme/assets/web/appstore-4-pin.webp" alt="Pin it on top"></td>
+    <td width="50%"><img src="Marketing/readme/assets/web/appstore-5-on-device.webp" alt="Everything stays on your Mac"></td>
   </tr>
   <tr>
     <td><b>Pin it on top.</b> Float a snip above your other windows while you write, code, or compare. Drag to move, scroll to zoom.</td>
@@ -134,7 +134,7 @@ Snip brings that flow to the Mac as a tiny native menu bar app. There's no Elect
 </table>
 
 <p align="center">
-  <img src="Marketing/readme/assets/scroll-record.png" alt="Scrolling screenshot of a chat with a live preview, and a screen recording of a dashboard region with pause and stop controls" width="880">
+  <img src="Marketing/readme/assets/web/scroll-record.webp" alt="Scrolling screenshot of a chat with a live preview, and a screen recording of a dashboard region with pause and stop controls" width="880">
 </p>
 
 **Scroll it. Record it.** Select a region and press the scroll button: scroll at your own pace and Snip stitches one long image as you go, keeping sticky headers and sidebars out of the middle. Or press record for an MP4 of any region, with pause, resume, and <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>A</kbd> to stop.
@@ -207,7 +207,7 @@ Snip captures only when you ask it to, and records video only after you press Re
 `snip` is the same capture, stitching, recording, and markup as a command-line tool, so coding agents (Claude Code, Codex, Cursor, anything with a shell) can see your screen and show you things.
 
 <p align="center">
-  <img src="Marketing/readme/assets/agent-marked.png" alt="A dashboard screenshot marked by an agent: the churn card boxed and numbered, an arrow and a note saying Churn went up. Worth a look?, and the week 11 bar circled" width="640"><br>
+  <img src="Marketing/readme/assets/web/agent-marked.webp" alt="A dashboard screenshot marked by an agent: the churn card boxed and numbered, an arrow and a note saying Churn went up. Worth a look?, and the week 11 bar circled" width="640"><br>
   <sub>Marked up by an agent with <code>snip mark</code>.</sub>
 </p>
 
