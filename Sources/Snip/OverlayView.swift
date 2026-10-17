@@ -561,8 +561,8 @@ final class OverlayView: NSView, NSTextFieldDelegate {
         switch event.keyCode {
         case 53: // esc
             session?.cancel()
-        case 36, 76: // return
-            if phase == .selected { done() }
+        case 36, 76: // return; ⇧Return copies for agents
+            if phase == .selected { done(forAgents: event.modifierFlags.contains(.shift)) }
         case 123, 124, 125, 126: // arrows nudge the selection
             guard phase == .selected, var r = selection else { return }
             let step = (event.modifierFlags.contains(.shift) ? 10 : 1) / scale
@@ -579,7 +579,7 @@ final class OverlayView: NSView, NSTextFieldDelegate {
             needsDisplay = true
         default:
             if command && key == "z" { undo() }
-            else if command && key == "c" { if phase == .selected { done() } }
+            else if command && key == "c" { if phase == .selected { done(forAgents: event.modifierFlags.contains(.shift)) } }
             else if command && key == "s" { if phase == .selected { save() } }
             else if !command && key == "c", phase != .selected, let mouse, let c = color(at: mouse) {
                 Output.copyString(c.hexString)
@@ -706,10 +706,11 @@ final class OverlayView: NSView, NSTextFieldDelegate {
         return (image, sel.size)
     }
 
-    func done() {
+    func done(forAgents: Bool = false) {
         guard let (image, size) = finishedImage() else { return }
-        Output.copyImage(image, pointSize: size)
+        Output.copyImage(image, pointSize: size, forAgents: forAgents)
         session?.finish()
+        if forAgents { Output.toast("Copied for agents") }
     }
 
     func save() {

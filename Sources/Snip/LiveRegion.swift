@@ -161,11 +161,17 @@ final class ImageResultWindow: NSWindow {
         let save = NSButton(title: "Save…", target: self, action: #selector(saveImage))
         let copy = NSButton(title: "Copy", target: self, action: #selector(copyImage))
         copy.keyEquivalent = "\r"
-        contentView = ResultLayout.make(main: scroll, buttons: [save, copy])
+        let agents = NSButton(title: "Copy for Agents", target: self, action: #selector(copyForAgents))
+        contentView = ResultLayout.make(main: scroll, buttons: [save, agents, copy])
     }
 
     @objc private func copyImage() {
         Output.copyImage(image, pointSize: pointSize)
+        close()
+    }
+
+    @objc private func copyForAgents() {
+        Output.copyImage(image, pointSize: pointSize, forAgents: true)
         close()
     }
 

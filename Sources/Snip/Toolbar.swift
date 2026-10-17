@@ -219,6 +219,7 @@ final class ToolbarView: FloatingBar {
         stack.addArrangedSubview(IconButton(symbol: "square.and.arrow.down", tip: "Save (⌘S)") { [weak self] in self?.overlay?.save() })
         stack.addArrangedSubview(separator())
         stack.addArrangedSubview(IconButton(symbol: "xmark", tip: "Cancel (Esc)", tint: cancelRed) { [weak self] in self?.overlay?.cancel() })
+        stack.addArrangedSubview(IconButton(symbol: "sparkles", tip: "Copy for Agents: smaller image, same detail (⇧Enter)") { [weak self] in self?.overlay?.done(forAgents: true) })
         stack.addArrangedSubview(IconButton(symbol: "checkmark", tip: "Copy (Enter)", tint: confirmGreen) { [weak self] in self?.overlay?.done() })
     }
 

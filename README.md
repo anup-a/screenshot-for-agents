@@ -96,7 +96,7 @@ Also included:
 - **Scrolling screenshots.** Select a region, press the scroll button, and scroll. Snip stitches one long image and handles sticky headers, footers, and sidebars.
 - **Screen recording.** Record any region to MP4, with pause. Snip's own controls stay out of the video.
 - **Save or copy.** Save a PNG with <kbd>⌘</kbd> <kbd>S</kbd>, or copy with <kbd>Enter</kbd>.
-- **Copies sized for AI chats.** A copied snip is 1 pixel per screen point, at most 1568 px, so pasting it into Claude, ChatGPT or an agent uses about a quarter of the context of a Retina image. Saved files stay full resolution, and **Copy at Full Resolution** in the menu bar turns it off.
+- **Copy for Agents.** The ✨ button (or <kbd>⇧</kbd> <kbd>Enter</kbd>) copies 1 pixel per screen point instead of Retina's 2: half the tokens in Claude, ChatGPT or Claude Code, and in [our test](Benchmarks/legibility) the agent read it just as well. <kbd>Enter</kbd> still copies full resolution.
 
 ## Keyboard shortcuts
 
@@ -110,6 +110,7 @@ Also included:
 | <kbd>Shift</kbd> while drawing | Even shapes, straight arrows |
 | <kbd>⌘</kbd> <kbd>Z</kbd> | Undo |
 | <kbd>Enter</kbd>, <kbd>⌘</kbd> <kbd>C</kbd>, or double-click | Copy to clipboard and finish |
+| <kbd>⇧</kbd> <kbd>Enter</kbd> or <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>C</kbd> | Copy for Agents (smaller image, same detail) and finish |
 | <kbd>⌘</kbd> <kbd>S</kbd> | Save as PNG |
 | Right-click | Reset the selection |
 | <kbd>Esc</kbd> | Cancel |
@@ -118,7 +119,7 @@ Also included:
 | --- | --- |
 | Drag | Move |
 | Scroll | Zoom |
-| <kbd>⌘</kbd> <kbd>C</kbd> / <kbd>⌘</kbd> <kbd>S</kbd> | Copy / Save |
+| <kbd>⌘</kbd> <kbd>C</kbd> / <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>C</kbd> / <kbd>⌘</kbd> <kbd>S</kbd> | Copy / Copy for Agents / Save |
 | Right-click | Copy, Save, Close |
 | Double-click or <kbd>Esc</kbd> | Close |
 

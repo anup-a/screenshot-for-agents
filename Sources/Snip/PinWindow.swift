@@ -81,7 +81,9 @@ private final class PinView: NSView {
     override func keyDown(with event: NSEvent) {
         let key = event.charactersIgnoringModifiers?.lowercased()
         if event.keyCode == 53 { pin.close() }
-        else if event.modifierFlags.contains(.command) && key == "c" { copyImage() }
+        else if event.modifierFlags.contains(.command) && key == "c" {
+            if event.modifierFlags.contains(.shift) { copyForAgents() } else { copyImage() }
+        }
         else if event.modifierFlags.contains(.command) && key == "s" { saveImage() }
         else { super.keyDown(with: event) }
     }
@@ -89,6 +91,9 @@ private final class PinView: NSView {
     override func menu(for event: NSEvent) -> NSMenu? {
         let menu = NSMenu()
         menu.addItem(withTitle: "Copy", action: #selector(copyImage), keyEquivalent: "c").target = self
+        let agents = menu.addItem(withTitle: "Copy for Agents", action: #selector(copyForAgents), keyEquivalent: "c")
+        agents.keyEquivalentModifierMask = [.command, .shift]
+        agents.target = self
         menu.addItem(withTitle: "Save…", action: #selector(saveImage), keyEquivalent: "s").target = self
         menu.addItem(withTitle: "Actual Size", action: #selector(actualSize), keyEquivalent: "0").target = self
         menu.addItem(.separator())
@@ -99,6 +104,11 @@ private final class PinView: NSView {
     @objc private func copyImage() {
         Output.copyImage(pin.image, pointSize: pin.pointSize)
         Output.toast("Copied")
+    }
+
+    @objc private func copyForAgents() {
+        Output.copyImage(pin.image, pointSize: pin.pointSize, forAgents: true)
+        Output.toast("Copied for agents")
     }
 
     @objc private func saveImage() { Output.save(pin.image, pointSize: pin.pointSize) }
