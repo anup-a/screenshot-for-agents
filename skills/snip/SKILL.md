@@ -9,7 +9,7 @@ description: Use on macOS to see or show what is on screen. Screenshot a window,
 
 ## Setting up
 
-Check with `snip version`. If it is missing: `git clone https://github.com/anup-a/snip && ./snip/install-cli.sh` (installs to `~/.local/bin/snip`).
+Check with `snip version`. If it is missing: `git clone https://github.com/anup-a/screenshot-for-agents && ./screenshot-for-agents/install-cli.sh` (installs to `~/.local/bin/snip`).
 
 macOS asks for two permissions, granted to the app running `snip` (the user's terminal or agent app), not to snip:
 

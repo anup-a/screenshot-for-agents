@@ -4,7 +4,7 @@ import Foundation
 /// Screenshots sized for a model to read. A Retina capture has 4x the pixels of what's on screen,
 /// and models bill images by pixel area, so a full-resolution paste costs far more context than it needs.
 public enum AgentSize {
-    /// The longest edge Claude reads without shrinking the image first.
+    /// Older Claude models shrink anything longer to this; it also keeps a full-screen copy under ~2k tokens on newer ones.
     public static let maxEdge: CGFloat = 1568
 
     /// One pixel per screen point, then no edge longer than `maxEdge`. Tall scrolling captures

@@ -5,8 +5,8 @@
 <h1 align="center">Snip</h1>
 
 <p align="center">
-  <b>Screenshots for you and your agent.</b><br>
-  The fastest screenshots on a Mac, <a href="#speed">about 2x faster than macOS <code>screencapture</code></a>.<br>
+  <b>Screenshots for agents. And for you.</b><br>
+  <a href="#tokens">Up to 75% fewer image tokens</a> with no detail lost, and <a href="#speed">about 2x faster than macOS <code>screencapture</code></a>.<br>
   Press <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>A</kbd> to snap, mark up, scroll, record, and pin.<br>
   Your coding agent runs <code>snip</code> to do the same from the terminal.
 </p>
@@ -16,7 +16,7 @@
   <img alt="Swift" src="https://img.shields.io/badge/Swift-5.10-F05138?logo=swift&logoColor=white">
   <img alt="No network" src="https://img.shields.io/badge/network-none-2ea44f">
   <img alt="Sandboxed" src="https://img.shields.io/badge/App%20Sandbox-on-0a84ff">
-  <a href="https://github.com/anup-a/snip/releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/anup-a/snip?label=download&color=0a84ff"></a>
+  <a href="https://github.com/anup-a/screenshot-for-agents/releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/anup-a/screenshot-for-agents?label=download&color=0a84ff"></a>
   <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
 
@@ -96,7 +96,7 @@ Also included:
 - **Scrolling screenshots.** Select a region, press the scroll button, and scroll. Snip stitches one long image and handles sticky headers, footers, and sidebars.
 - **Screen recording.** Record any region to MP4, with pause. Snip's own controls stay out of the video.
 - **Save or copy.** Save a PNG with <kbd>⌘</kbd> <kbd>S</kbd>, or copy with <kbd>Enter</kbd>.
-- **Copy for Agents.** The ✨ button (or <kbd>⇧</kbd> <kbd>Enter</kbd>) copies 1 pixel per screen point instead of Retina's 2: half the tokens in Claude, ChatGPT or Claude Code, and in [our test](Benchmarks/legibility) the agent read it just as well. <kbd>Enter</kbd> still copies full resolution.
+- **Copy for Agents.** The ✨ button (or <kbd>⇧</kbd> <kbd>Enter</kbd>) copies 1 pixel per screen point instead of Retina's 2: [up to 75% fewer image tokens](#tokens) in Claude, ChatGPT or Claude Code, and the agent reads it just as well. <kbd>Enter</kbd> still copies full resolution.
 
 ## Keyboard shortcuts
 
@@ -125,15 +125,15 @@ Also included:
 
 ## Install
 
-**Download:** grab **Snip-1.0.0.dmg** from the [latest release](https://github.com/anup-a/snip/releases/latest). It's a universal build (Apple silicon and Intel, macOS 14+), signed with Developer ID and notarized by Apple. Open it and drag Snip to Applications.
+**Download:** grab **Snip-1.0.0.dmg** from the [latest release](https://github.com/anup-a/screenshot-for-agents/releases/latest). It's a universal build (Apple silicon and Intel, macOS 14+), signed with Developer ID and notarized by Apple. Open it and drag Snip to Applications.
 
 **Mac App Store:** submitted as *Snip: Screenshot & Markup*. The link will be added here once it's approved.
 
 **Build from source** (requires macOS 14+ and Xcode or the Swift toolchain):
 
 ```sh
-git clone https://github.com/anup-a/snip.git
-cd snip
+git clone https://github.com/anup-a/screenshot-for-agents.git
+cd screenshot-for-agents
 ./build.sh            # builds build/Snip.app
 ./build.sh --install  # copies it to /Applications and launches it
 ```
@@ -162,6 +162,7 @@ Snip captures only when you ask it to, and records video only after you press Re
 ```sh
 ./install-cli.sh                                  # installs ~/.local/bin/snip
 snip shot --app Safari                            # screenshot a window
+snip shot --app Safari --small                    # same, sized for a model (see Tokens)
 snip scroll --app Slack                           # the whole scrolling window, one long image
 snip record --app "My App" --background           # start a video; `snip stop` ends it
 snip ocr shot.png --json                          # text with pixel boxes
@@ -169,7 +170,7 @@ snip mark shot.png --box 120,340,400,90 --step 140,360 --text 600,360,"This one"
 snip pin shot.marked.png                          # float it on your screen
 ```
 
-Every command prints the file it wrote (`--json` for details). `snip help` lists every flag. Agents learn the tool from [`skills/snip/SKILL.md`](skills/snip/SKILL.md); with the skills CLI: `npx skills add anup-a/snip`.
+Every command prints the file it wrote (`--json` for details). `snip help` lists every flag. Agents learn the tool from [`skills/snip/SKILL.md`](skills/snip/SKILL.md); with the skills CLI: `npx skills add anup-a/screenshot-for-agents`.
 
 The command-line tool needs Screen Recording permission for your terminal, and Accessibility for `snip scroll`.
 
@@ -178,6 +179,27 @@ Scripts can also open the app's capture by posting the distributed notification 
 ```swift
 DistributedNotificationCenter.default().post(name: .init("com.anup.snip.capture"), object: nil)
 ```
+
+## Tokens
+
+A Mac screenshot is Retina: every point on screen is 2x2 pixels. Models charge for images by pixel area, so a Retina screenshot costs up to four times the tokens of what's actually on screen, for detail a model doesn't use. **Copy for Agents** (the ✨ button, or <kbd>⇧</kbd> <kbd>Enter</kbd>) and `snip shot --small` send 1 pixel per screen point instead.
+
+| Screenshot on a 15" MacBook Air | Retina | For agents | Saved |
+| --- | --- | --- | --- |
+| Full screen | 2940×1912, ~4,784 tokens | 1470×956, ~1,874 tokens | 61% |
+| A 600×400-point region | 1200×800, ~1,280 tokens | 600×400, ~320 tokens | 75% |
+
+Estimated with Anthropic's formula for Claude: width × height ÷ 750, at most about 4,784 tokens per image on current models, which shrink anything larger first.
+
+**Nothing gets lost.** We showed two dense screens (a dashboard with confusable order IDs and 9-point footers, and an editor with code, a terminal error and a status bar) at eight sizes to fresh Claude Opus 5.5 agents and asked 46 questions with exact answers:
+
+| Pixels per point | 2 (Retina) | 1.5 | **1 (for agents)** | 0.8 | 0.7 | 0.6 | 0.5 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Wrong answers (of 46) | 1 | 1 | **1** | 1 | 0 | 3 | 8 |
+
+The one miss above 0.7 was the same at every size: `0O` read as `00` in a monospace font. Reading starts to fail at 0.6, so 1 pixel per point leaves a wide margin. The agent never gave a wrong answer while saying it was sure. Pages, questions, answers and images are in [`Benchmarks/legibility`](Benchmarks/legibility).
+
+Copy for Agents is in the app on `main` and ships in the next release; build from source to try it now.
 
 ## Speed
 
