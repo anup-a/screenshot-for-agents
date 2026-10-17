@@ -1,0 +1,40 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../html/shared.css"><link rel="stylesheet" href="readme.css"><link rel="stylesheet" href="charts.css">
+<script src="charts.js"></script>
+</head><body>
+<div class="shot chart" data-shot style="--h:520px">
+  <div class="bg"></div><div class="grid"></div>
+  <div class="head">
+    <div class="kicker">Tokens per screenshot</div>
+    <h2>Same screen, <span class="hl">up to 75% fewer tokens</span></h2>
+  </div>
+  <div class="legend"><span><i style="background:#5d6378"></i>Retina copy</span><span><i style="background:#4c84ff"></i>Copy for Agents</span></div>
+  <div class="plot" id="plot" style="top:190px"></div>
+  <div class="note">15" MacBook Air (1470×956 points). Claude's formula: width × height ÷ 750, at most ~4,784 tokens per image.</div>
+</div>
+<script>
+const { C, el, svg, hbar, fmt } = Charts;
+const rows = [
+  { name: 'Full screen', retina: 4784, retinaPx: '2940×1912', agents: 1874, agentsPx: '1470×956' },
+  { name: '600×400 pt region', retina: 1280, retinaPx: '1200×800', agents: 320, agentsPx: '600×400' },
+];
+const W = 1296, labelW = 230, barH = 34, gap = 8, groupGap = 44, max = 4784, plotW = W - labelW - 250;
+const s = svg(document.getElementById('plot'), W, rows.length * (2 * barH + gap) + (rows.length - 1) * groupGap);
+const x = (v) => labelW + (v / max) * plotW;
+rows.forEach((r, i) => {
+  const y = i * (2 * barH + gap + groupGap);
+  el(s, 'text', { x: 0, y: y + barH + gap / 2 + 6, fill: C.ink, 'font-size': 20, 'font-weight': 650 }, r.name);
+  hbar(s, labelW, y, x(r.retina) - labelW, barH, C.other);
+  const t1 = el(s, 'text', { x: x(r.retina) + 14, y: y + barH / 2 + 6, fill: C.ink2, 'font-size': 17, 'font-weight': 600 });
+  el(t1, 'tspan', {}, `${fmt(r.retina)} tokens`);
+  el(t1, 'tspan', { fill: C.ink3, 'font-weight': 500, dx: 10 }, r.retinaPx);
+  const y2 = y + barH + gap;
+  hbar(s, labelW, y2, x(r.agents) - labelW, barH, C.accent);
+  const t2 = el(s, 'text', { x: x(r.agents) + 14, y: y2 + barH / 2 + 6, fill: '#fff', 'font-size': 17, 'font-weight': 650 });
+  el(t2, 'tspan', {}, `${fmt(r.agents)} tokens`);
+  el(t2, 'tspan', { fill: C.ink3, 'font-weight': 500, dx: 10 }, r.agentsPx);
+  const saved = Math.round((1 - r.agents / r.retina) * 100);
+  el(t2, 'tspan', { fill: C.accentText, 'font-weight': 750, dx: 14 }, `−${saved}%`);
+});
+</script>
+</body></html>

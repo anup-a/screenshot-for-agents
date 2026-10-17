@@ -25,6 +25,58 @@
   <sub><a href="Marketing/readme/assets/demo.mp4">Watch in full quality (MP4)</a></sub>
 </p>
 
+## Tokens
+
+<p align="center">
+  <img src="Marketing/readme/assets/charts-tokens.png" alt="Tokens per screenshot on a 15-inch MacBook Air. Full screen: Retina copy 4,784 tokens, Copy for Agents 1,874 tokens (61% fewer). 600 by 400 point region: 1,280 versus 320 tokens (75% fewer)." width="880">
+</p>
+
+A Mac screenshot is Retina: every point on screen is 2x2 pixels, and models charge for images by pixel area. **Copy for Agents** (the ✨ button, or <kbd>⇧</kbd> <kbd>Enter</kbd>) and `snip shot --small` send 1 pixel per screen point instead.
+
+<p align="center">
+  <img src="Marketing/readme/assets/charts-legibility.png" alt="Correct answers out of 46 by pixels per point: 45 at 2x, 1.5x, 1x and 0.8x, 46 at 0.7x, then 43 at 0.6x and 38 at 0.5x. Tokens per screenshot fall from 4,784 at 2x to 1,728 at 1x." width="880">
+</p>
+
+Fewer pixels, same answers. We showed two dense screens at seven sizes to fresh Claude Opus 5.5 agents and asked 46 questions with exact answers. Reading holds down to 0.7 pixels per point and starts to fail at 0.6, so 1 pixel per point leaves a wide margin. The one miss above that was the same at every size (`0O` read as `00` in a monospace font), and the agent never gave a wrong answer while saying it was sure. Copy for Agents ships in the next release; build from source to try it now.
+
+<details><summary>The numbers</summary>
+
+| Pixels per point | 2 (Retina) | 1.5 | **1 (for agents)** | 0.8 | 0.7 | 0.6 | 0.5 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Wrong answers (of 46) | 1 | 1 | **1** | 1 | 0 | 3 | 8 |
+| Tokens, 1440×900-point screen | 4,784 | 3,888 | **1,728** | 1,106 | 847 | 622 | 432 |
+
+Tokens are estimated with Anthropic's formula for Claude: width × height ÷ 750, at most about 4,784 per image on current models, which shrink anything larger first. Pages, questions, answers and images: [`Benchmarks/legibility`](Benchmarks/legibility).
+
+</details>
+
+## Speed
+
+<p align="center">
+  <img src="Marketing/readme/assets/charts-speed.png" alt="Median time per screenshot. Full screen: snip 376 ms, screencapture 775, python mss 693 (1x only), Peekaboo 1,127. Region: 291, 611, 499, 1,017. Window: 453, 827, mss not supported, Peekaboo 5,527." width="880">
+</p>
+
+Agents take a lot of screenshots, each one a fresh process, so `snip shot` is built to be quick. The Mac was busy during the run (load average 25 to 60), so every number is high, but the order held in every run. On an idle Mac a full-screen `snip shot` takes about 200 ms. Measure your own Mac with `python3 Benchmarks/bench.py`.
+
+<details><summary>The numbers, and where the time went</summary>
+
+| | `snip` 0.2 | `screencapture` | python `mss` | Peekaboo 4.9 |
+| --- | --- | --- | --- | --- |
+| Full screen | **376 ms** | 775 ms | 693 ms (1x only) | 1,127 ms |
+| Region | **291 ms** | 611 ms | 499 ms (1x only) | 1,017 ms |
+| Window | **453 ms** | 827 ms | not supported | 5,527 ms |
+
+Apple M1, macOS 27, 2880×1800 display.
+
+Where the time went:
+
+- No app setup. `snip` never starts an AppKit app for a screenshot.
+- Screens and regions come straight from ScreenCaptureKit's rect capture, without listing every window first.
+- Windows use CoreGraphics' window capture, which skips the session ScreenCaptureKit sets up for each new process (with a ScreenCaptureKit fallback).
+- PNGs are compressed on every core at once. Lossless, and smaller than macOS's own encoder.
+
+</details>
+
 ## For you and your agent
 
 <p align="center">
@@ -179,46 +231,6 @@ Scripts can also open the app's capture by posting the distributed notification 
 ```swift
 DistributedNotificationCenter.default().post(name: .init("com.anup.snip.capture"), object: nil)
 ```
-
-## Tokens
-
-A Mac screenshot is Retina: every point on screen is 2x2 pixels. Models charge for images by pixel area, so a Retina screenshot costs up to four times the tokens of what's actually on screen, for detail a model doesn't use. **Copy for Agents** (the ✨ button, or <kbd>⇧</kbd> <kbd>Enter</kbd>) and `snip shot --small` send 1 pixel per screen point instead.
-
-| Screenshot on a 15" MacBook Air | Retina | For agents | Saved |
-| --- | --- | --- | --- |
-| Full screen | 2940×1912, ~4,784 tokens | 1470×956, ~1,874 tokens | 61% |
-| A 600×400-point region | 1200×800, ~1,280 tokens | 600×400, ~320 tokens | 75% |
-
-Estimated with Anthropic's formula for Claude: width × height ÷ 750, at most about 4,784 tokens per image on current models, which shrink anything larger first.
-
-**Nothing gets lost.** We showed two dense screens (a dashboard with confusable order IDs and 9-point footers, and an editor with code, a terminal error and a status bar) at eight sizes to fresh Claude Opus 5.5 agents and asked 46 questions with exact answers:
-
-| Pixels per point | 2 (Retina) | 1.5 | **1 (for agents)** | 0.8 | 0.7 | 0.6 | 0.5 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Wrong answers (of 46) | 1 | 1 | **1** | 1 | 0 | 3 | 8 |
-
-The one miss above 0.7 was the same at every size: `0O` read as `00` in a monospace font. Reading starts to fail at 0.6, so 1 pixel per point leaves a wide margin. The agent never gave a wrong answer while saying it was sure. Pages, questions, answers and images are in [`Benchmarks/legibility`](Benchmarks/legibility).
-
-Copy for Agents is in the app on `main` and ships in the next release; build from source to try it now.
-
-## Speed
-
-Agents take a lot of screenshots, each one a fresh process, so `snip shot` is built to be quick. Median of 20 rounds at native Retina resolution, every tool run once per round in shuffled order:
-
-| | `snip` 0.2 | `screencapture` | python `mss` | Peekaboo 4.9 |
-| --- | --- | --- | --- | --- |
-| Full screen | **376 ms** | 775 ms | 693 ms (1x only) | 1,127 ms |
-| Region | **291 ms** | 611 ms | 499 ms (1x only) | 1,017 ms |
-| Window | **453 ms** | 827 ms | not supported | 5,527 ms |
-
-Apple M1, macOS 27, 2880×1800 display. The Mac was busy during the run (load average 25 to 60), so every number is high, but the order held in every run. On an idle Mac a full-screen `snip shot` takes about 200 ms. Measure your own Mac with `python3 Benchmarks/bench.py`.
-
-Where the time went:
-
-- No app setup. `snip` never starts an AppKit app for a screenshot.
-- Screens and regions come straight from ScreenCaptureKit's rect capture, without listing every window first.
-- Windows use CoreGraphics' window capture, which skips the session ScreenCaptureKit sets up for each new process (with a ScreenCaptureKit fallback).
-- PNGs are compressed on every core at once. Lossless, and smaller than macOS's own encoder.
 
 ## Project layout
 

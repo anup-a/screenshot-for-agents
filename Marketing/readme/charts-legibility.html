@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../html/shared.css"><link rel="stylesheet" href="readme.css"><link rel="stylesheet" href="charts.css">
+<script src="charts.js"></script>
+</head><body>
+<div class="shot chart" data-shot style="--h:780px">
+  <div class="bg"></div><div class="grid"></div>
+  <div class="head">
+    <div class="kicker">How small before an agent misreads?</div>
+    <h2>Half the pixels, <span class="hl">the same answers</span></h2>
+  </div>
+  <div class="plot" id="plot" style="top:186px"></div>
+  <div class="note">46 questions with exact answers on two dense 1440×900-point screens, one fresh Claude Opus 5.5 agent per size. Tokens from Claude's formula.</div>
+</div>
+<script>
+const { C, el, svg, vbar, fmt } = Charts;
+const cols = [
+  { ppp: '2×', label: 'Retina', right: 45, tokens: 4784 },
+  { ppp: '1.5×', right: 45, tokens: 3888 },
+  { ppp: '1×', label: 'For agents', right: 45, tokens: 1728, pick: true },
+  { ppp: '0.8×', right: 45, tokens: 1106 },
+  { ppp: '0.7×', right: 46, tokens: 847 },
+  { ppp: '0.6×', right: 43, tokens: 622, bad: true },
+  { ppp: '0.5×', right: 38, tokens: 432, bad: true },
+];
+const W = 1296, axisW = 236, plotW = W - axisW, colW = plotW / cols.length;
+const topH = 210, gapH = 60, botH = 170, axisH = 58;
+const s = svg(document.getElementById('plot'), W, topH + gapH + botH + axisH);
+const cx = (i) => axisW + colW * (i + 0.5);
+
+// Highlight the 1× column and shade the sizes where reading fails.
+const pick = cols.findIndex((c) => c.pick);
+el(s, 'rect', { x: axisW + colW * pick + 8, y: -8, width: colW - 16, height: topH + gapH + botH + axisH + 4, rx: 12, fill: 'rgba(76,132,255,.12)', stroke: 'rgba(143,180,255,.35)' });
+const firstBad = cols.findIndex((c) => c.bad);
+el(s, 'rect', { x: axisW + colW * firstBad + 8, y: -8, width: colW * (cols.length - firstBad) - 16, height: topH + 8, rx: 12, fill: 'rgba(255,122,107,.07)' });
+el(s, 'text', { x: axisW + colW * firstBad + colW, y: 22, fill: C.danger, 'font-size': 15, 'font-weight': 650, 'text-anchor': 'middle' }, 'Starts misreading');
+
+// Top: correct answers (line, 36 to 46).
+const yMin = 36, yMax = 46, yTop = (v) => 34 + (1 - (v - yMin) / (yMax - yMin)) * (topH - 50);
+el(s, 'text', { x: 0, y: 30, fill: C.ink, 'font-size': 19, 'font-weight': 650 }, 'Correct answers');
+el(s, 'text', { x: 0, y: 54, fill: C.ink3, 'font-size': 15 }, 'out of 46');
+[38, 42, 46].forEach((v) => {
+  el(s, 'line', { x1: axisW, x2: W, y1: yTop(v), y2: yTop(v), stroke: C.grid });
+  el(s, 'text', { x: axisW - 14, y: yTop(v) + 5, fill: C.ink3, 'font-size': 14, 'text-anchor': 'end' }, v);
+});
+el(s, 'polyline', { points: cols.map((c, i) => `${cx(i)},${yTop(c.right)}`).join(' '), fill: 'none', stroke: C.accent, 'stroke-width': 2.5, 'stroke-linejoin': 'round' });
+cols.forEach((c, i) => {
+  el(s, 'circle', { cx: cx(i), cy: yTop(c.right), r: 6, fill: c.bad ? C.danger : C.accent, stroke: '#0d0f1d', 'stroke-width': 2 });
+  el(s, 'text', { x: cx(i), y: yTop(c.right) - 16, fill: c.bad ? C.danger : C.ink2, 'font-size': 16, 'font-weight': 650, 'text-anchor': 'middle' }, c.right);
+});
+
+// Bottom: tokens per screenshot (bars from zero).
+const y0 = topH + gapH, tMax = 4784, barW = colW * 0.46, base = y0 + botH;
+el(s, 'text', { x: 0, y: y0 + 24, fill: C.ink, 'font-size': 19, 'font-weight': 650 }, 'Tokens');
+el(s, 'text', { x: 0, y: y0 + 48, fill: C.ink3, 'font-size': 15 }, 'per screenshot');
+el(s, 'line', { x1: axisW, x2: W, y1: base, y2: base, stroke: 'rgba(255,255,255,.18)' });
+cols.forEach((c, i) => {
+  const h = (c.tokens / tMax) * (botH - 30);
+  vbar(s, cx(i) - barW / 2, base - h, barW, h, c.pick ? C.accent : C.other);
+  el(s, 'text', { x: cx(i), y: base - h - 10, fill: c.pick ? '#fff' : C.ink2, 'font-size': 16, 'font-weight': 650, 'text-anchor': 'middle' }, fmt(c.tokens));
+});
+
+// Shared x axis.
+cols.forEach((c, i) => {
+  el(s, 'text', { x: cx(i), y: base + 28, fill: c.pick ? '#fff' : C.ink2, 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle' }, c.ppp);
+  if (c.label) el(s, 'text', { x: cx(i), y: base + 50, fill: c.pick ? C.accentText : C.ink3, 'font-size': 14, 'font-weight': 600, 'text-anchor': 'middle' }, c.label);
+});
+el(s, 'text', { x: 0, y: base + 28, fill: C.ink3, 'font-size': 15 }, 'Pixels per point');
+</script>
+</body></html>

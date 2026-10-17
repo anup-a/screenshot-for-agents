@@ -19,7 +19,9 @@ for (const f of pages) {
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))));
   const file = path.join(here, 'assets', f.replace('.html', '.png'));
-  await page.screenshot({ path: file });
+  // Charts are shorter than the 1440x900 canvas: shoot just the [data-shot] element.
+  const shot = await page.$('[data-shot]');
+  await (shot ? shot.screenshot({ path: file }) : page.screenshot({ path: file }));
   await page.close();
   console.log('wrote', path.relative(process.cwd(), file));
 }
