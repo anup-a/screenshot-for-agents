@@ -11,13 +11,15 @@ enum Commands {
     static func shot(_ argv: [String]) async throws {
         var args = ArgReader(argv)
         let json = args.flag("--json")
+        let small = args.flag("--small")
         let out = outputURL(try args.value("-o", "--out"), ext: "png", prefix: "shot")
         let target = try await Target.resolve(&args, stills: true)
         Trace.mark("resolved target")
         try args.finish()
-        let image = try await target.capture()
+        var image = try await target.capture()
         Trace.mark("captured")
-        let scale = target.scale(of: image)
+        var scale = target.scale(of: image)
+        if small { (image, scale) = shrink(image, scale: scale) }
         try ImageFile.writePNG(image, scale: scale, opaque: target.opaque, to: out)
         Trace.mark("wrote PNG")
         report(["path": out.path, "width": image.width, "height": image.height, "scale": scale, "target": target.label], json: json)
@@ -32,6 +34,7 @@ enum Commands {
         let at = try args.value("--at").map { try numbers($0, count: 2, what: "--at") }
         let maxHeight = try args.value("--max").flatMap(Int.init) ?? Stitcher.maxHeight
         let fromTop = !args.flag("--from-here")
+        let small = args.flag("--small")
         let target = try await Target.resolve(&args)
         try args.finish()
         guard target.sourceRect != nil || target.window != nil else {
@@ -91,9 +94,18 @@ enum Commands {
                 try await Task.sleep(nanoseconds: 300_000_000)
             }
         }
-        guard let image = stitcher.compose() else { throw CLIError("nothing captured") }
-        try ImageFile.writePNG(image, scale: target.scale, to: out)
-        report(["path": out.path, "width": image.width, "height": image.height, "scale": target.scale, "target": target.label], json: json)
+        guard var image = stitcher.compose() else { throw CLIError("nothing captured") }
+        var scale = target.scale
+        if small { (image, scale) = shrink(image, scale: scale) }
+        try ImageFile.writePNG(image, scale: scale, to: out)
+        report(["path": out.path, "width": image.width, "height": image.height, "scale": scale, "target": target.label], json: json)
+    }
+
+    /// --small: the image an agent needs to look at, not a Retina master (see AgentSize). `scale` stays pixels per point.
+    static func shrink(_ image: CGImage, scale: CGFloat) -> (CGImage, CGFloat) {
+        let points = CGSize(width: CGFloat(image.width) / scale, height: CGFloat(image.height) / scale)
+        let resized = AgentSize.resize(image, points: points)
+        return (resized, CGFloat(resized.width) / points.width)
     }
 
     // MARK: record

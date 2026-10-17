@@ -30,7 +30,7 @@ When `snip` says a permission is off, pass its message to the user: they flip th
 
 ## Recipes
 
-**Check how something looks.** `snip shot --app Safari`, then read the PNG.
+**Check how something looks.** `snip shot --app Safari --small`, then read the PNG. `--small` (on `shot` and `scroll`) writes 1 pixel per screen point, at most 1568 px wide, about a quarter of the context of a Retina image. Leave it off when you need to OCR small text or hand the user a crisp file.
 
 **The whole scrolling window.** `snip scroll --app Slack` scrolls to the top, steps down to the end and stitches one image. It moves the pointer onto the window and brings the app forward, so tell the user before you run it. Use `--at x,y` (points inside the window) when the part that scrolls isn't in the middle, and `--max 20000` to cap the height in pixels. Ctrl-C or a timeout still saves what it has.
 

@@ -7,8 +7,8 @@ let usage = """
 snip \(version): screenshots, scrolling screenshots, recordings and markup for macOS, made for agents.
 
 Usage:
-  snip shot    [target] [-o out.png]                 screenshot a window, app, region or screen
-  snip scroll  [target] [-o out.png] [--at x,y] [--max px]
+  snip shot    [target] [-o out.png] [--small]       screenshot a window, app, region or screen
+  snip scroll  [target] [-o out.png] [--at x,y] [--max px] [--small]
                                                      scroll a window top to bottom, stitch one long image
   snip record  [target] [-o out.mp4] [--seconds n] [--background] [--no-cursor]
                                                      record video until --seconds, Ctrl-C or `snip stop`
@@ -30,6 +30,9 @@ Marks, applied in order (pixel coordinates of IMAGE, top-left origin):
   --text x,y,LABEL    text               --blur x,y,w,h     pixelate (hide private info)
   --color NAME|#hex   red (default), yellow, blue, green, black, white; applies to later marks
   --scale N           stroke and text size multiplier (default: 2 for Retina-size images, else 1)
+
+--small (shot, scroll): 1 pixel per screen point, at most 1568 px wide, so the image costs a model
+about a quarter of the context. Use it to look; keep full size for OCR of small text.
 
 Output: prints the file path. Add --json for {"path", "width", "height", …}.
 Files go to $TMPDIR/snip/ unless -o is given.

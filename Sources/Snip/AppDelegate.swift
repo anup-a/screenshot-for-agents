@@ -30,6 +30,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         login.target = self
         login.state = SMAppService.mainApp.status == .enabled ? .on : .off
         menu.addItem(login)
+        let fullRes = NSMenuItem(title: "Copy at Full Resolution", action: #selector(toggleFullResolution(_:)), keyEquivalent: "")
+        fullRes.target = self
+        fullRes.state = UserDefaults.standard.bool(forKey: Output.fullResolutionKey) ? .on : .off
+        fullRes.toolTip = "Off: copies are sized for AI chats and agents (1 pixel per point, at most 1568 px), so they use far less context."
+        menu.addItem(fullRes)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit Snip", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem.menu = menu
@@ -81,6 +86,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func showPermission() { PermissionWindow.show() }
+
+    @objc private func toggleFullResolution(_ item: NSMenuItem) {
+        let full = !UserDefaults.standard.bool(forKey: Output.fullResolutionKey)
+        UserDefaults.standard.set(full, forKey: Output.fullResolutionKey)
+        item.state = full ? .on : .off
+    }
 
     @objc private func toggleLaunchAtLogin(_ item: NSMenuItem) {
         do {

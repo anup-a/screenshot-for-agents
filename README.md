@@ -96,6 +96,7 @@ Also included:
 - **Scrolling screenshots.** Select a region, press the scroll button, and scroll. Snip stitches one long image and handles sticky headers, footers, and sidebars.
 - **Screen recording.** Record any region to MP4, with pause. Snip's own controls stay out of the video.
 - **Save or copy.** Save a PNG with <kbd>⌘</kbd> <kbd>S</kbd>, or copy with <kbd>Enter</kbd>.
+- **Copies sized for AI chats.** A copied snip is 1 pixel per screen point, at most 1568 px, so pasting it into Claude, ChatGPT or an agent uses about a quarter of the context of a Retina image. Saved files stay full resolution, and **Copy at Full Resolution** in the menu bar turns it off.
 
 ## Keyboard shortcuts
 

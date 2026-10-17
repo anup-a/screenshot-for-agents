@@ -10,7 +10,12 @@ enum Output {
         return rep.representation(using: .png, properties: [:])
     }
 
+    /// Off by default: copies are sized for pasting into an agent (see AgentSize). Saved files stay full resolution.
+    static let fullResolutionKey = "copyFullResolution"
+
     static func copyImage(_ image: CGImage, pointSize: CGSize) {
+        let full = UserDefaults.standard.bool(forKey: fullResolutionKey)
+        let image = full ? image : AgentSize.resize(image, points: pointSize)
         let rep = NSBitmapImageRep(cgImage: image)
         rep.size = pointSize
         let pasteboard = NSPasteboard.general
