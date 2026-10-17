@@ -25,6 +25,60 @@
   <sub><a href="Marketing/readme/assets/demo.mp4">Watch in full quality (MP4)</a></sub>
 </p>
 
+## For you and your agent
+
+<p align="center">
+  <img src="Marketing/readme/assets/web/hero.webp" alt="Left: a person marks up a dashboard with ⌘⇧A. Right: an agent runs snip shot, ocr, mark, and pin, and the marked screenshot floats on screen." width="880">
+</p>
+
+<table>
+  <tr>
+    <th width="50%">You press <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>A</kbd></th>
+    <th width="50%">Your agent runs <code>snip</code></th>
+  </tr>
+  <tr>
+    <td valign="top">
+      Click a window or drag a region.<br>
+      Box it, arrow it, number the steps, blur the secrets.<br>
+      Scroll for one long image, or record an MP4.<br>
+      <kbd>Enter</kbd> copies it. Or pin it above everything.
+    </td>
+    <td valign="top">
+      <code>snip shot --app Safari</code> to see what you see.<br>
+      <code>snip scroll --app Slack</code> for the whole thread.<br>
+      <code>snip ocr</code> finds the words, with pixel boxes.<br>
+      <code>snip mark</code> and <code>snip pin</code> to point you at the problem.
+    </td>
+  </tr>
+</table>
+
+Same app, same stitching, same markup style. [Set up the CLI](#for-agents) in one command.
+
+## Install
+
+**Download:** grab **Snip-1.0.0.dmg** from the [latest release](https://github.com/anup-a/screenshot-for-agents/releases/latest). It's a universal build (Apple silicon and Intel, macOS 14+), signed with Developer ID and notarized by Apple. Open it and drag Snip to Applications.
+
+**Mac App Store:** [Snip: Screenshot & Markup](https://apps.apple.com/app/id6817088290).
+
+**Agent CLI** (`snip`, for Claude Code, Codex, Cursor or any shell): `git clone https://github.com/anup-a/screenshot-for-agents && ./screenshot-for-agents/install-cli.sh`. More in [For agents](#for-agents).
+
+**Build from source** (requires macOS 14+ and Xcode or the Swift toolchain):
+
+```sh
+git clone https://github.com/anup-a/screenshot-for-agents.git
+cd screenshot-for-agents
+./build.sh            # builds build/Snip.app
+./build.sh --install  # copies it to /Applications and launches it
+```
+
+`build.sh` signs with your Apple Development identity, so the Screen Recording permission survives rebuilds.
+
+### First launch
+
+Snip needs **Screen Recording** permission, like every screenshot app on macOS. On first launch a setup window links straight to *System Settings → Privacy & Security → Screen & System Audio Recording*, shows live when access is granted, and offers a one-click relaunch (macOS only applies the permission after a relaunch). You can reopen it any time from the menu bar with **Screen Recording Permission…**.
+
+The menu bar item also has **Take Screenshot** and **Launch at Login**.
+
 ## Tokens
 
 <p align="center">
@@ -76,35 +130,6 @@ Where the time went:
 - PNGs are compressed on every core at once. Lossless, and smaller than macOS's own encoder.
 
 </details>
-
-## For you and your agent
-
-<p align="center">
-  <img src="Marketing/readme/assets/web/hero.webp" alt="Left: a person marks up a dashboard with ⌘⇧A. Right: an agent runs snip shot, ocr, mark, and pin, and the marked screenshot floats on screen." width="880">
-</p>
-
-<table>
-  <tr>
-    <th width="50%">You press <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>A</kbd></th>
-    <th width="50%">Your agent runs <code>snip</code></th>
-  </tr>
-  <tr>
-    <td valign="top">
-      Click a window or drag a region.<br>
-      Box it, arrow it, number the steps, blur the secrets.<br>
-      Scroll for one long image, or record an MP4.<br>
-      <kbd>Enter</kbd> copies it. Or pin it above everything.
-    </td>
-    <td valign="top">
-      <code>snip shot --app Safari</code> to see what you see.<br>
-      <code>snip scroll --app Slack</code> for the whole thread.<br>
-      <code>snip ocr</code> finds the words, with pixel boxes.<br>
-      <code>snip mark</code> and <code>snip pin</code> to point you at the problem.
-    </td>
-  </tr>
-</table>
-
-Same app, same stitching, same markup style. [Set up the CLI](#for-agents) in one command.
 
 ## Why
 
@@ -174,29 +199,6 @@ Also included:
 | <kbd>⌘</kbd> <kbd>C</kbd> / <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>C</kbd> / <kbd>⌘</kbd> <kbd>S</kbd> | Copy / Copy for Agents / Save |
 | Right-click | Copy, Save, Close |
 | Double-click or <kbd>Esc</kbd> | Close |
-
-## Install
-
-**Download:** grab **Snip-1.0.0.dmg** from the [latest release](https://github.com/anup-a/screenshot-for-agents/releases/latest). It's a universal build (Apple silicon and Intel, macOS 14+), signed with Developer ID and notarized by Apple. Open it and drag Snip to Applications.
-
-**Mac App Store:** submitted as *Snip: Screenshot & Markup*. The link will be added here once it's approved.
-
-**Build from source** (requires macOS 14+ and Xcode or the Swift toolchain):
-
-```sh
-git clone https://github.com/anup-a/screenshot-for-agents.git
-cd screenshot-for-agents
-./build.sh            # builds build/Snip.app
-./build.sh --install  # copies it to /Applications and launches it
-```
-
-`build.sh` signs with your Apple Development identity, so the Screen Recording permission survives rebuilds.
-
-### First launch
-
-Snip needs **Screen Recording** permission, like every screenshot app on macOS. On first launch a setup window links straight to *System Settings → Privacy & Security → Screen & System Audio Recording*, shows live when access is granted, and offers a one-click relaunch (macOS only applies the permission after a relaunch). You can reopen it any time from the menu bar with **Screen Recording Permission…**.
-
-The menu bar item also has **Take Screenshot** and **Launch at Login**.
 
 ## Privacy
 
