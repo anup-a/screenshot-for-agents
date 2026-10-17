@@ -32,7 +32,7 @@ const pick = cols.findIndex((c) => c.pick);
 el(s, 'rect', { x: axisW + colW * pick + 8, y: -8, width: colW - 16, height: topH + gapH + botH + axisH + 4, rx: 12, fill: 'rgba(76,132,255,.12)', stroke: 'rgba(143,180,255,.35)' });
 const firstBad = cols.findIndex((c) => c.bad);
 el(s, 'rect', { x: axisW + colW * firstBad + 8, y: -8, width: colW * (cols.length - firstBad) - 16, height: topH + 8, rx: 12, fill: 'rgba(255,122,107,.07)' });
-el(s, 'text', { x: axisW + colW * firstBad + colW, y: 22, fill: C.danger, 'font-size': 15, 'font-weight': 650, 'text-anchor': 'middle' }, 'Starts misreading');
+el(s, 'text', { x: axisW + colW * firstBad + colW, y: 22, fill: C.danger, 'font-size': 17, 'font-weight': 650, 'text-anchor': 'middle' }, 'Starts misreading');
 
 // Top: correct answers (line, 36 to 46).
 const yMin = 36, yMax = 46, yTop = (v) => 34 + (1 - (v - yMin) / (yMax - yMin)) * (topH - 50);
@@ -40,7 +40,7 @@ el(s, 'text', { x: 0, y: 30, fill: C.ink, 'font-size': 19, 'font-weight': 650 },
 el(s, 'text', { x: 0, y: 54, fill: C.ink3, 'font-size': 15 }, 'out of 46');
 [38, 42, 46].forEach((v) => {
   el(s, 'line', { x1: axisW, x2: W, y1: yTop(v), y2: yTop(v), stroke: C.grid });
-  el(s, 'text', { x: axisW - 14, y: yTop(v) + 5, fill: C.ink3, 'font-size': 14, 'text-anchor': 'end' }, v);
+  el(s, 'text', { x: axisW - 14, y: yTop(v) + 5, fill: C.ink3, 'font-size': 17, 'text-anchor': 'end' }, v);
 });
 el(s, 'polyline', { points: cols.map((c, i) => `${cx(i)},${yTop(c.right)}`).join(' '), fill: 'none', stroke: C.accent, 'stroke-width': 2.5, 'stroke-linejoin': 'round' });
 cols.forEach((c, i) => {
@@ -62,7 +62,7 @@ cols.forEach((c, i) => {
 // Shared x axis.
 cols.forEach((c, i) => {
   el(s, 'text', { x: cx(i), y: base + 28, fill: c.pick ? '#fff' : C.ink2, 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle' }, c.ppp);
-  if (c.label) el(s, 'text', { x: cx(i), y: base + 50, fill: c.pick ? C.accentText : C.ink3, 'font-size': 14, 'font-weight': 600, 'text-anchor': 'middle' }, c.label);
+  if (c.label) el(s, 'text', { x: cx(i), y: base + 50, fill: c.pick ? C.accentText : C.ink3, 'font-size': 17, 'font-weight': 600, 'text-anchor': 'middle' }, c.label);
 });
 el(s, 'text', { x: 0, y: base + 28, fill: C.ink3, 'font-size': 15 }, 'Pixels per point');
 </script>

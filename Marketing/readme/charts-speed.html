@@ -19,16 +19,16 @@ const panels = [
   { name: 'Region', ms: [291, 611, 499, 1017], note: [null, null, '1x only', null] },
   { name: 'Window', ms: [453, 827, null, 5527] },
 ];
-const W = 1296, gutter = 48, panelW = (W - gutter * 2) / 3, nameW = 128, barH = 26, gap = 12, cap = 1200;
+const W = 1296, gutter = 48, panelW = (W - gutter * 2) / 3, nameW = 142, barH = 26, gap = 12, cap = 1200;
 const s = svg(document.getElementById('plot'), W, 44 + tools.length * (barH + gap));
 panels.forEach((p, pi) => {
   const x0 = pi * (panelW + gutter), bx = x0 + nameW, bw = panelW - nameW - 92;
   el(s, 'text', { x: x0, y: 18, fill: C.ink, 'font-size': 20, 'font-weight': 700 }, p.name);
   tools.forEach((t, ti) => {
     const y = 40 + ti * (barH + gap), v = p.ms[ti], me = ti === 0;
-    el(s, 'text', { x: bx - 12, y: y + barH / 2 + 5, fill: me ? '#fff' : C.ink2, 'font-size': 15, 'font-weight': me ? 700 : 550, 'text-anchor': 'end' }, t);
+    el(s, 'text', { x: bx - 12, y: y + barH / 2 + 5, fill: me ? '#fff' : C.ink2, 'font-size': 17, 'font-weight': me ? 700 : 550, 'text-anchor': 'end' }, t);
     if (v == null) {
-      el(s, 'text', { x: bx, y: y + barH / 2 + 5, fill: C.ink3, 'font-size': 15, 'font-style': 'italic' }, 'not supported');
+      el(s, 'text', { x: bx, y: y + barH / 2 + 5, fill: C.ink3, 'font-size': 17, 'font-style': 'italic' }, 'not supported');
       return;
     }
     const broken = v > cap, w = (Math.min(v, cap) / cap) * bw;
@@ -38,7 +38,7 @@ panels.forEach((p, pi) => {
       const bx2 = bx + w - 34;
       el(s, 'path', { d: `M${bx2},${y - 3} l8,${barH + 6} M${bx2 + 9},${y - 3} l8,${barH + 6}`, stroke: '#0d0f1d', 'stroke-width': 5 });
     }
-    const label = el(s, 'text', { x: bx + w + 10, y: y + barH / 2 + 5, fill: me ? '#fff' : C.ink2, 'font-size': 15, 'font-weight': me ? 750 : 600 }, `${fmt(v)} ms`);
+    const label = el(s, 'text', { x: bx + w + 10, y: y + barH / 2 + 5, fill: me ? '#fff' : C.ink2, 'font-size': 17, 'font-weight': me ? 750 : 600 }, `${fmt(v)} ms`);
     if (p.note?.[ti]) el(label, 'tspan', { fill: C.ink3, 'font-weight': 500, dx: 8 }, p.note[ti]);
   });
 });

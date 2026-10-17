@@ -3,12 +3,12 @@ html, body { height: auto; }
 .shot.chart { --a: #3370ff; --a2: #8fb4ff; --a3: #7a5cf0; height: var(--h, 640px); }
 .chart .bg::after { top: 120px; opacity: .45; }
 .chart .head { position: absolute; left: 72px; right: 72px; top: 52px; }
-.chart .kicker { font-size: 15px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--a2); }
+.chart .kicker { font-size: 17px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--a2); }
 .chart h2 { margin-top: 10px; font-size: 44px; line-height: 1.08; font-weight: 750; letter-spacing: -.035em; color: #fff; }
 .chart h2 .hl { color: var(--a2); }
-.chart .note { position: absolute; left: 72px; right: 72px; bottom: 30px; font-size: 14px; color: rgba(232,236,255,.42); }
+.chart .note { position: absolute; left: 72px; right: 72px; bottom: 28px; font-size: 18px; color: rgba(232,236,255,.42); }
 .chart .plot { position: absolute; left: 72px; right: 72px; }
 .chart svg { display: block; overflow: visible; font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; }
 .chart svg text { font-variant-numeric: tabular-nums; }
-.legend { position: absolute; right: 72px; top: 66px; display: flex; gap: 22px; font-size: 15px; font-weight: 550; color: rgba(232,236,255,.75); }
+.legend { position: absolute; right: 72px; top: 66px; display: flex; gap: 22px; font-size: 18px; font-weight: 550; color: rgba(232,236,255,.75); }
 .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
