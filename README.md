@@ -56,7 +56,7 @@ Same app, same stitching, same markup style. [Set up the CLI](#for-agents) in on
 
 ## Install
 
-**Download:** grab **Snip-1.0.0.dmg** from the [latest release](https://github.com/anup-a/screenshot-for-agents/releases/latest). It's a universal build (Apple silicon and Intel, macOS 14+), signed with Developer ID and notarized by Apple. Open it and drag Snip to Applications.
+**Download:** grab **Snip-1.0.1.dmg** from the [latest release](https://github.com/anup-a/screenshot-for-agents/releases/latest). It's a universal build (Apple silicon and Intel, macOS 14+), signed with Developer ID and notarized by Apple. Open it and drag Snip to Applications.
 
 **Mac App Store:** [Snip: Screenshot & Markup](https://apps.apple.com/app/id6817088290).
 
