@@ -8,10 +8,10 @@ figure{display:flex;flex-direction:column;gap:8px}
 img{width:100%;border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 10px 30px rgba(0,0,0,.5)}
 figcaption{font-size:13px;color:rgba(255,255,255,.55)}
 </style></head><body>
-<h2>Snip: Mac App Store screenshots v2 (2880×1800)</h2>
+<h2>Snip: Mac App Store screenshots v3 (2880×1800)</h2>
 <div class="row" id="row"></div>
 <script>
-const shots=[['1-snap','1 Snap'],['2-markup','2 Mark up'],['3-private','3 Private'],['4-pin','4 Pin'],['5-on-device','5 On your Mac']];
+const shots=[['0-agents','1 For agents'],['1-snap','2 Snap'],['2-markup','3 Mark up'],['3-private','4 Private'],['4-pin','5 Pin'],['5-on-device','6 On your Mac']];
 const row=document.getElementById('row');row.style.setProperty('--n',shots.length);
 for(const [f,c] of shots){row.insertAdjacentHTML('beforeend',`<figure><img src="../appstore-v2/${f}.png"><figcaption>${c}</figcaption></figure>`)}
 </script></body></html>

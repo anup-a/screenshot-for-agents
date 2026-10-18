@@ -1,0 +1,61 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css">
+<style>
+  .shot { --a: #4c84ff; --a2: #9cc0ff; --a3: #7a4dff; }
+  #base { left: 80px; top: 326px; }
+  /* Same look as the app's TipView (dark rounded label under the button), at the lifted scale. */
+  .tip { position: absolute; z-index: 21; height: 30px; padding: 0 11px; border-radius: 8px; display: flex; align-items: center;
+    background: rgba(31,31,31,.94); color: #fff; font-size: 15.5px; font-weight: 550; letter-spacing: -.005em; white-space: nowrap;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.14), 0 10px 26px rgba(0,0,0,.45); }
+  .tokens { position: absolute; left: 846px; top: 326px; width: 514px; padding: 30px 32px 28px; border-radius: 22px; z-index: 10;
+    background: rgba(18,20,32,.74); backdrop-filter: blur(22px);
+    box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 40px 90px -10px rgba(0,0,0,.7); }
+  .tokens .k { font-size: 15px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgba(232,236,255,.55); }
+  .row { margin-top: 26px; }
+  .row .name { display: flex; justify-content: space-between; align-items: baseline; font-size: 19px; font-weight: 600; color: rgba(255,255,255,.78); }
+  .row .name b { font-size: 26px; font-weight: 750; letter-spacing: -.02em; color: #fff; font-variant-numeric: tabular-nums; }
+  .row .name small { font-size: 15px; font-weight: 500; color: rgba(232,236,255,.5); margin-left: 6px; }
+  .bar { margin-top: 10px; height: 26px; border-radius: 7px; background: #5d6378; }
+  .row.me .name { color: #fff; }
+  .row.me .bar { width: 39.2%; background: linear-gradient(90deg, #3f73ff, #6f9cff); box-shadow: 0 0 30px rgba(76,132,255,.55); }
+  .save { margin-top: 26px; display: flex; align-items: center; gap: 14px; font-size: 19px; font-weight: 600; color: rgba(255,255,255,.85); }
+  .save .pct { font-size: 46px; font-weight: 800; letter-spacing: -.04em;
+    background: linear-gradient(100deg, #fff 0%, var(--a2) 45%, var(--a) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .foot { margin-top: 18px; font-size: 13.5px; line-height: 1.4; color: rgba(232,236,255,.45); }
+</style></head><body>
+<div class="shot">
+  <div class="bg"></div><div class="grid"></div>
+  <header>
+    <div class="brand"><img src="../../Icons/renders/2-scissors.png" alt="">Snip</div>
+    <h1>Copy for <span class="hl">your agent</span></h1>
+    <p class="sub">One click sends a smaller image with the same detail. Press <span class="kc">⇧</span><span class="kc">↩</span> or click <b>✦</b></p>
+  </header>
+
+  <div class="crop card" id="base" data-src="raw/dash-annotate.png" data-rect="110,70,1080,720" data-scale="0.64" style="position:absolute"></div>
+  <!-- The real right end of the toolbar (undo, save, cancel, Copy for Agents, copy), lifted. -->
+  <div class="crop lift" id="bar" data-src="raw/dash-annotate.png" data-rect="1000,677,176,44" data-follow="#base" data-lift="2.1" style="border-radius:10px"></div>
+  <div class="tip" id="tip">Copy for Agents: smaller image, same detail (⇧Enter)</div>
+
+  <div class="tokens">
+    <div class="k">Tokens per full-screen screenshot</div>
+    <div class="row">
+      <div class="name"><span>Retina copy<small>2940×1912</small></span><b>4,784</b></div>
+      <div class="bar"></div>
+    </div>
+    <div class="row me">
+      <div class="name"><span>Copy for Agents<small>1470×956</small></span><b>1,874</b></div>
+      <div class="bar"></div>
+    </div>
+    <div class="save"><span class="pct">−61%</span><span>fewer tokens<br><small style="font-size:16px;font-weight:500;color:rgba(232,236,255,.6)">Up to 75% fewer on a region</small></span></div>
+    <div class="foot">15-inch MacBook Air. Tokens estimated as width × height ÷ 750.</div>
+  </div>
+  <div class="grain"></div>
+</div>
+<script src="shared.js"></script>
+<script>
+  // Hang the tooltip under the lifted ✦ button (scene x 1122.5), like the app does.
+  const bar = document.getElementById('bar'), tip = document.getElementById('tip');
+  const s = bar.offsetWidth / 176, bx = bar.offsetLeft + (1122.5 - 1000) * s;
+  tip.style.top = bar.offsetTop + bar.offsetHeight + 14 + 'px';
+  tip.style.left = bx - tip.offsetWidth / 2 + 'px';
+</script>
+</body></html>
