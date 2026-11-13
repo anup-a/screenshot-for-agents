@@ -58,7 +58,7 @@ Same app, same stitching, same markup style. [Set up the CLI](#for-agents) in on
 
 **Download:** grab **Snip-1.0.1.dmg** from the [latest release](https://github.com/anup-a/screenshot-for-agents/releases/latest). It's a universal build (Apple silicon and Intel, macOS 14+), signed with Developer ID and notarized by Apple. Open it and drag Snip to Applications.
 
-**Mac App Store:** [Snip: Screenshot & Markup](https://apps.apple.com/app/id6817088290).
+**Mac App Store:** [Snip: Screenshots for Agents](https://apps.apple.com/app/id6817088290).
 
 **Agent CLI** (`snip`, for Claude Code, Codex, Cursor or any shell): `git clone https://github.com/anup-a/screenshot-for-agents && ./screenshot-for-agents/install-cli.sh`. More in [For agents](#for-agents).
 
@@ -91,7 +91,7 @@ A Mac screenshot is Retina: every point on screen is 2x2 pixels, and models char
   <img src="Marketing/readme/assets/web/charts-legibility.webp" alt="Correct answers out of 46 by pixels per point: 45 at 2x, 1.5x, 1x and 0.8x, 46 at 0.7x, then 43 at 0.6x and 38 at 0.5x. Tokens per screenshot fall from 4,784 at 2x to 1,728 at 1x." width="880">
 </p>
 
-Fewer pixels, same answers. We showed two dense screens at seven sizes to fresh Claude Opus 5.5 agents and asked 46 questions with exact answers. Reading holds down to 0.7 pixels per point and starts to fail at 0.6, so 1 pixel per point leaves a wide margin. The one miss above that was the same at every size (`0O` read as `00` in a monospace font), and the agent never gave a wrong answer while saying it was sure. Copy for Agents ships in the next release; build from source to try it now.
+Fewer pixels, same answers. We showed two dense screens at seven sizes to fresh Claude Opus 5.5 agents and asked 46 questions with exact answers. Reading holds down to 0.7 pixels per point and starts to fail at 0.6, so 1 pixel per point leaves a wide margin. The one miss above that was the same at every size (`0O` read as `00` in a monospace font), and the agent never gave a wrong answer while saying it was sure.
 
 <details><summary>The numbers</summary>
 
